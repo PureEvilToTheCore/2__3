@@ -1,0 +1,28 @@
+MenuBegin
+	WindowBegin
+		Position=(0,0)
+		Color=(250,235,215)
+	WindowEnd
+	WindowBegin
+		Position=(0,500)
+		Color=(0,206,209)
+	WindowEnd
+	ButtonBegin
+		Position=(100,100)
+		Color=(250,128,114)
+		HiglightColor=(220,20,60)
+		Name=First
+	ButtonEnd
+	ButtonBegin
+		Position=(300,300)
+		Color=(255,105,180)
+		HiglightColor=(255,20,147)
+		Name=Second
+	ButtonEnd
+	ButtonBegin
+		Position=(100,500)
+		Color=(152,251,152)
+		HiglightColor=(154,205,50)
+		Name=Third
+	ButtonEnd
+MenuEnd
