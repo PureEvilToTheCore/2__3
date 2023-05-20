@@ -17,18 +17,20 @@ HDC curHDC;
 int buttonCount = 0;
 
 
-void DrawRect(HDC hdc,HWND hWnd , POINT position, int color[3], int width, int height) {
+void DrawRect(HDC hdc, HWND hWnd, POINT position, int color[3], int width, int height) {
 	HBRUSH hbrush = CreateSolidBrush(RGB(color[0], color[1], color[2]));
+	HPEN pen = CreatePen(PS_SOLID, 0, RGB(color[0], color[1], color[2]));
 	SelectObject(hdc, hbrush);
+	SelectObject(hdc, pen);
 	Rectangle(hdc, position.x, position.y, position.x + width, position.y + height);
 	DeleteObject(hbrush);
-	//InvalidateRect(hWnd, NULL, FALSE);
 }
 
 void DrawWindows(Window* windowHeader, HDC hdc, HWND hWnd) {
-	while (windowHeader != NULL) {
-		DrawRect(hdc, hWnd, windowHeader->position, windowHeader->color, WINDOW_WIDTH, WINDOW_WIDTH);
-		windowHeader = windowHeader->next;
+	Window* currentWindow = windowHeader;
+	while (currentWindow != NULL) {
+		DrawRect(hdc, hWnd, currentWindow->position, currentWindow->color, WINDOW_WIDTH, WINDOW_WIDTH);
+		currentWindow = currentWindow->next;
 	}
 }
 
@@ -40,42 +42,50 @@ void DrawButtons(Button* buttonHeader, HDC hdc, HWND hWnd) {
 	}
 }
 
-void DraWButt(HDC hdc, Button* buttonHeader)
+void DraWButt(HDC hdc, Button* header)
 {
-	COLORREF color = RGB(buttonHeader->HighlightColor[0], buttonHeader->HighlightColor[1], buttonHeader->HighlightColor[2]);
-	HPEN pen = CreatePen(PS_SOLID, 10, color);
-	HGDIOBJ oldPen = SelectObject(hdc, pen);
-	Rectangle(hdc, buttonHeader->position.x, buttonHeader->position.y, buttonHeader->position.x + BUTTON_WIDTH, buttonHeader->position.y + BUTTON_WIDTH);
+	COLORREF color = RGB(header->color[0], header->color[1], header->color[2]);
+	COLORREF colorH = RGB(header->HighlightColor[0], header->HighlightColor[1], header->HighlightColor[2]);
+	HPEN pen = CreatePen(PS_SOLID, 10, colorH);
+	HBRUSH brush = CreateSolidBrush(color);
+	SelectObject(hdc, pen);
+	SelectObject(hdc, brush);
+	Rectangle(hdc, header->position.x, header->position.y, header->position.x + BUTTON_WIDTH, header->position.y + BUTTON_WIDTH);
+	DeleteObject(pen);
 }
-void Update(int position, Button* head, Window* wind, HDC hdc, HWND hWnd) {
+void Update(int position, HDC hdc, HWND hWnd) {
 	DrawWindows(windowHeader, hdc, hWnd);
 	DrawButtons(buttonHeader, hdc, hWnd);
-	while (head != NULL) {
-		if (head->push == true)
+	Button* curHeader = buttonHeader;
+	if (position == 1 && buttonHeader->push) {
+		DraWButt(hdc, buttonHeader);
+		return;
+	}
+	while (curHeader != NULL) {
+		if (curHeader->push == true)
 		{
-			if (position == 1 && head->prev != NULL) {
-				//DrawRect(hdc, head->prev->position, *(head->highlightColor), BUTTON_WIDTH, BUTTON_WIDTH);
-				DraWButt(hdc, head->prev);
-				head->prev->push = true;
-				head->push = false;
+			if (position == 1 && curHeader->prev != NULL) {
+				DraWButt(hdc, curHeader->prev);
+				curHeader->prev->push = true;
+				curHeader->push = false;
+				return;
 			}
-			else if (position == -1 && head->next != NULL) {
-				//DrawRect(hdc, head->next->position, *(head->highlightColor), BUTTON_WIDTH, BUTTON_WIDTH);
-				DraWButt(hdc, head->next) ;
-				head->next->push = true;
-				head->push = false;
+			else if (position == -1 && curHeader->next != NULL) {
+				DraWButt(hdc, curHeader->next);
+				curHeader->next->push = true;
+				curHeader->push = false;
+				return;
 			}
 			else if (position == 0) {
-				OutputDebugStringA(head->name);
+				OutputDebugStringA(curHeader->name);
 				OutputDebugStringA("\n");
 			}
 		}
-		head = head->next;
+		curHeader = curHeader->next;
 	}
-	//Draw(head, wind, hdc);
 }
 
-void SystemInitialise(char* fileName, Button* newButton, Window* newWindow, HDC hdc, int pos, HWND hWnd ) {
+void SystemInitialise(char* fileName, HDC hdc, HWND hWnd) {
 	FILE* file;
 	char str[256];
 	file = fopen(fileName, "r");
@@ -84,8 +94,6 @@ void SystemInitialise(char* fileName, Button* newButton, Window* newWindow, HDC 
 		if (strcmp(str, "\tButtonBegin\n") == 0) {
 			isButton = 1;
 			newButton = malloc(sizeof(Button));
-			//newButton->color = NULL;
-			//newButton->highlightColor = malloc(sizeof(Color));
 			newButton->name = malloc(256 * sizeof(char));
 			newButton->prev = NULL;
 			newButton->next = buttonHeader;
@@ -97,7 +105,6 @@ void SystemInitialise(char* fileName, Button* newButton, Window* newWindow, HDC 
 		else if (strcmp(str, "\tWindowBegin\n") == 0) {
 			isButton = 0;
 			newWindow = malloc(sizeof(Window));
-			//newWindow->color = malloc(sizeof(Color));
 			newWindow->prev = NULL;
 			newWindow->next = windowHeader;
 			if (windowHeader != NULL) {
@@ -111,7 +118,7 @@ void SystemInitialise(char* fileName, Button* newButton, Window* newWindow, HDC 
 			else if (sscanf(str, "\t\tColor=(%d,%d,%d)\n", &newButton->color[0], &newButton->color[1], &newButton->color[2]) == 3) {
 				// Color line
 			}
-			else if (sscanf(str, "\t\tHighlightColor=(%d,%d,%d)\n", &newButton->HighlightColor[0], &newButton->HighlightColor[1], &newButton->HighlightColor[2]) == 3) {
+			else if (sscanf(str, "\t\HiglightColor=(%d,%d,%d)\n", &newButton->HighlightColor[0], &newButton->HighlightColor[1], &newButton->HighlightColor[2]) == 3) {
 				// HighlightColor line
 			}
 			else if (sscanf(str, "\t\tName=%s\n", newButton->name) == 1) {
@@ -131,7 +138,7 @@ void SystemInitialise(char* fileName, Button* newButton, Window* newWindow, HDC 
 	fclose(file);
 	DrawWindows(windowHeader, hdc, hWnd);
 	DrawButtons(buttonHeader, hdc, hWnd);
-	//Update(pos, buttonHeader, windowHeader, hdc);
+	Update(1, curHDC, hWnd);
 }
 
 void SystemShutdown() {
@@ -152,8 +159,6 @@ void SystemShutdown() {
 		currentWindow = nextWindow;
 	}
 }
-
-
 void SystemOpen(HDC hdc) {
 	curHDC = hdc;
 }

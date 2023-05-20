@@ -24,7 +24,7 @@ typedef struct Window {
 	struct Window* next;
 } Window;
 
-void SystemInitialise(char* fileName, Button* newButton, Window* newWindow, HWND hWnd);
+void SystemInitialise(char* fileName, Window* newWindow, HWND hWnd);
 void DrawWindows(Window* windowHeader, HDC hdc);
 void DrawButtons(Button* buttonHeader, HDC hdc);
-void Update(int position, Button* head, HDC hdc, HWND hWnd);
+void Update(int position, HDC hdc, HWND hWnd);

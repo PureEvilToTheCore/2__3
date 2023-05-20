@@ -1,10 +1,7 @@
-﻿// 2_3.cpp : Определяет точку входа для приложения.
-//
-
-#include "framework.h"
+﻿#include "framework.h"
 #include "2_3.h"
 #include "functions.h"
-#include <windowsx.h>
+#include "windowsx.h"
 #define MAX_LOADSTRING 100
 int count = 0;
 int pos = 1;
@@ -108,7 +105,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     {
         return FALSE;
     }
-    
+
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
     return TRUE;
@@ -123,9 +120,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - отправить сообщение о выходе и вернуться
 //
 //
-struct Button* buttonHeader1 = NULL;
-struct Window* windowHeader1 = NULL;
-Button* buttonHeader;
 HDC curHDC;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -134,7 +128,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
-        // Разобрать выбор в меню:
         switch (wmId)
         {
         case IDM_ABOUT:
@@ -150,16 +143,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_PAINT:
     {
-
         PAINTSTRUCT ps;
         curHDC = BeginPaint(hWnd, &ps);
-        //Rectangle(curHDC, 0, 0, 800, 800);
-        SystemInitialise("text.txt", buttonHeader1, windowHeader1, curHDC, position, hWnd);
-        Update( 1, buttonHeader1, curHDC, hWnd);
-        //DrawWindows(windowHeader1, curHDC);
-        //DrawButtons(buttonHeader1, curHDC);
-        // TODO: Добавьте сюда любой код прорисовки, использующий HDC...
-        EndPaint(hWnd, &ps);
+        Rectangle(curHDC, 0, 0, 800, 800);
+        SystemInitialise("text.txt", curHDC, hWnd);
     }
     break;
     case WM_KEYDOWN:
@@ -167,17 +154,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case VK_UP:
         {
-            Update(1, buttonHeader1, curHDC, hWnd);
+            Update(1, curHDC, hWnd);
         }
         break;
         case VK_DOWN:
         {
-            Update(-1, buttonHeader1, curHDC, hWnd);
+            Update(-1, curHDC, hWnd);
         }
         break;
         case VK_RETURN:
         {
-            Update(0, buttonHeader1, curHDC, hWnd);
+            Update(0, curHDC, hWnd);
         }
         break;
         case WM_DESTROY:

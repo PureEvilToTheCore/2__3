@@ -8,10 +8,10 @@ MenuBegin
 		Color=(0,206,209)
 	WindowEnd
 	ButtonBegin
-		Position=(100,100)
-		Color=(250,128,114)
-		HiglightColor=(220,20,60)
-		Name=First
+		Position=(100,500)
+		Color=(152,251,152)
+		HiglightColor=(154,205,50)
+		Name=Third
 	ButtonEnd
 	ButtonBegin
 		Position=(300,300)
@@ -20,9 +20,9 @@ MenuBegin
 		Name=Second
 	ButtonEnd
 	ButtonBegin
-		Position=(100,500)
-		Color=(152,251,152)
-		HiglightColor=(154,205,50)
-		Name=Third
+		Position=(100,100)
+		Color=(250,128,114)
+		HiglightColor=(220,20,60)
+		Name=First
 	ButtonEnd
 MenuEnd
