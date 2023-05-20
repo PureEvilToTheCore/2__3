@@ -17,7 +17,7 @@ HDC curHDC;
 int buttonCount = 0;
 
 
-void DrawRect(HDC hdc,HWND hWnd , POINT position, int color[3], int width, int height) {
+void DrawRect(HDC hdc, HWND hWnd, POINT position, int color[3], int width, int height) {
 	HBRUSH hbrush = CreateSolidBrush(RGB(color[0], color[1], color[2]));
 	HPEN pen = CreatePen(PS_SOLID, 0, RGB(color[0], color[1], color[2]));
 	SelectObject(hdc, hbrush);
@@ -71,7 +71,7 @@ void Update(int position, HDC hdc, HWND hWnd) {
 				return;
 			}
 			else if (position == -1 && curHeader->next != NULL) {
-				DraWButt(hdc, curHeader->next) ;
+				DraWButt(hdc, curHeader->next);
 				curHeader->next->push = true;
 				curHeader->push = false;
 				return;
@@ -85,7 +85,7 @@ void Update(int position, HDC hdc, HWND hWnd) {
 	}
 }
 
-void SystemInitialise(char* fileName, HDC hdc, HWND hWnd ) {
+void SystemInitialise(char* fileName, HDC hdc, HWND hWnd) {
 	FILE* file;
 	char str[256];
 	file = fopen(fileName, "r");

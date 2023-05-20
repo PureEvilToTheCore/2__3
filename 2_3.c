@@ -1,10 +1,7 @@
-﻿// 2_3.cpp : Определяет точку входа для приложения.
-//
-
-#include "framework.h"
+﻿#include "framework.h"
 #include "2_3.h"
 #include "functions.h"
-#include <windowsx.h>
+#include "windowsx.h"
 #define MAX_LOADSTRING 100
 int count = 0;
 int pos = 1;
@@ -108,7 +105,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     {
         return FALSE;
     }
-    
+
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
     return TRUE;
